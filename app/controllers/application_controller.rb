@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
 
+    before_action :verify_header
+
     private
 
     def current_user
@@ -16,5 +18,10 @@ class ApplicationController < ActionController::Base
 
     def valid_game?(type)
         return Game.valid?(type)
+    end
+
+    def verify_header
+        # binding.pry
+        render json: JSON.generate({error: "Invalid request"}) unless request.headers["X-HANDSHAKE-TOKEN"] == ENV['X-HANDSHAKE-TOKEN']
     end
 end

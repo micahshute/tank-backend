@@ -4,7 +4,6 @@ class Api::UsersController < ApplicationController
 
     def index
         @users = User.all
-        session[:test] = "test"
     end
 
     def show
@@ -12,12 +11,18 @@ class Api::UsersController < ApplicationController
     end
 
     def create
+        # binding.pry
         # user = User.new(username: params[:username], password: params[:password])
-        user = User.new(user_params)
-        if(user.save)
-            render json: JSON.generate({signup: :success})
+        if session[:csrf] == params[:authenticity_token]
+            user = User.new(user_params)
+            if(user.save)
+                session[:user_id] = user.id
+                render json: JSON.generate({signup: :success})
+            else
+                render json: JSON.generate({signup: :failure, errors: user.errors.full_messages})
+            end
         else
-            render json: JSON.generate({signup: :failure, errors: user.errors.full_messages})
+            render json: JSON.generate({signup: :failure, errors: "Unable to verify authenticity token"})
         end
     end
 

@@ -5,7 +5,8 @@ Rails.application.routes.draw do
     post "/signup" => 'users#create'
     post "/login" => 'sessions#create'
     delete "/logout" => 'sessions#destroy'
-
+    get "/handshake" => 'sessions#csrf_token'
+    
     resources :users, only: [:index, :show, :create, :update, :destroy] 
 
     resources :users do 
@@ -15,6 +16,7 @@ Rails.application.routes.draw do
     get "/users/:user_id/games/:type/:id" => 'games#show'
     get "/users/:user_id/games/:type" => 'games#index'
 
+    
 
 
   end

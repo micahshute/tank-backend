@@ -22,6 +22,10 @@ module TankBackend
           methods: [:get],
           headers: :any,
           credentials: true
+        resource '/api/handshake',
+          methods: [:get],
+          headers: :any,
+          credentials: true
         resource '*', headers: :any, methods: [:get, :options]
       end
     end
