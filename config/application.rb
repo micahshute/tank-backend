@@ -18,6 +18,10 @@ module TankBackend
           methods: [:post],
           headers: :any,
           credentials: true
+        resource '/api/login',
+          methods: [:post],
+          headers: :any,
+          credentials: true
         resource '/api/users',
           methods: [:get],
           headers: :any,

@@ -1,14 +1,20 @@
 class Api::SessionsController < ApplicationController
 
+    skip_before_action :verify_authenticity_token
+
 
     def create
-        user = User.find_by(username: params[:username])
-        if user.authenticate(params[:password])
-            session[:user_id] = user.id
-            @res = { login: :success }
-            
+        if session[:csrf] == params[:authenticity_token]
+            user = User.find_by(username: params[:username])
+            if !!user and user.authenticate(params[:password])
+                session[:user_id] = user.id
+                @res = { login: :success }
+                
+            else
+                @res = { login: :failure, error: "Username/password combination incorrect" }
+            end   
         else
-            @res = { login: :failure }
+            @res = { login: :failure, error: "Invalid authenticity token"}
         end
         render json: JSON.generate(@res)
     end
