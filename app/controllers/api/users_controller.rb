@@ -7,12 +7,16 @@ class Api::UsersController < ApplicationController
     end
 
     def show
-        @user = User.find(params[:id])
+        if (params[:id] == "current-user") and logged_in?
+            @user = current_user
+        elsif params[:id].to_i != 0
+            @user = User.find(params[:id])
+        else
+            render json: JSON.generate({ error: "Could not find user" })
+        end
     end
 
     def create
-        # binding.pry
-        # user = User.new(username: params[:username], password: params[:password])
         if session[:csrf] == params[:authenticity_token]
             user = User.new(user_params)
             if(user.save)
@@ -26,6 +30,11 @@ class Api::UsersController < ApplicationController
         end
     end
 
+
+    def username_check
+        taken = !!User.find_by(username: params[:username])
+        render json: JSON.generate({taken: taken})
+    end
 
     private
 

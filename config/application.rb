@@ -26,6 +26,11 @@ module TankBackend
           methods: [:get],
           headers: :any,
           credentials: true
+        resource '/api/username-check',
+          methods: [:post],
+          headers: :any,
+          credentials: true
+
         resource '*', headers: :any, methods: [:get, :options]
       end
     end

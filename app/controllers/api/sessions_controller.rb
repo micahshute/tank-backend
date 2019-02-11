@@ -15,6 +15,7 @@ class Api::SessionsController < ApplicationController
 
     def destroy
         session.delete(:user_id)
+        session.delete(:csrf)
         render json: JSON.generate({logout: :success})
     end
 
@@ -22,7 +23,7 @@ class Api::SessionsController < ApplicationController
         if request.headers["X-HANDSHAKE-TOKEN"] == ENV['X-HANDSHAKE-TOKEN']
             token = form_authenticity_token
             session[:csrf] = token
-            render json: JSON.generate({csrfToken: token})
+            render json: JSON.generate({csrfToken: token, logged_in: logged_in?})
         else
             render json: JSON.generate({data: "handshake failed"})
         end
