@@ -11,10 +11,10 @@ class Api::SessionsController < ApplicationController
                 @res = { login: :success }
                 
             else
-                @res = { login: :failure, error: "Username/password combination incorrect" }
+                @res = { login: :failure, errors: "Username/password combination incorrect" }
             end   
         else
-            @res = { login: :failure, error: "Invalid authenticity token"}
+            @res = { login: :failure, errors: "Invalid authenticity token"}
         end
         render json: JSON.generate(@res)
     end
