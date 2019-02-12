@@ -6,7 +6,8 @@ Rails.application.routes.draw do
     post "/login" => 'sessions#create'
     delete "/logout" => 'sessions#destroy'
     get "/handshake" => 'sessions#csrf_token'
-    
+    get '/authenticate' => 'sessions#authenticate'
+
     resources :users, only: [:index, :show, :create, :update, :destroy] 
 
     resources :users do 

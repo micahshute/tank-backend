@@ -31,7 +31,17 @@ class Api::SessionsController < ApplicationController
             session[:csrf] = token
             render json: JSON.generate({csrfToken: token, logged_in: logged_in?})
         else
-            render json: JSON.generate({data: "handshake failed"})
+            render json: JSON.generate({errors: "handshake failed"})
+        end
+    end
+
+
+    def authenticate
+        if(!!session[:user_id])
+            @user = User.find(session[:user_id])
+            render 'api/users/show'
+        else
+            render json: JSON.generate({ authenticated: false, errors: "User not authenticated"})
         end
     end
 

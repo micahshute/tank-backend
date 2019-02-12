@@ -1,3 +1,6 @@
+if(@user.id == session[:user_id])
+    json.authenticated true
+end
 json.(@user, :username, :id)
 json.games(@user.games) do |game|
     json.partial! 'api/games/game', game: game

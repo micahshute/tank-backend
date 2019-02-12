@@ -21,6 +21,6 @@ class ApplicationController < ActionController::Base
     end
 
     def verify_header
-        render json: JSON.generate({error: "Invalid request"}) unless request.headers["X-HANDSHAKE-TOKEN"] == ENV['X-HANDSHAKE-TOKEN']
+        render json: JSON.generate({errors: "Invalid request"}) unless request.headers["X-HANDSHAKE-TOKEN"] == ENV['X-HANDSHAKE-TOKEN']
     end
 end

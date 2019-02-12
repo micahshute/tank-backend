@@ -34,6 +34,10 @@ module TankBackend
           methods: [:post],
           headers: :any,
           credentials: true
+        resource '/api/authenticate',
+          methods: [:get],
+          headers: :any,
+          credentials: true
 
         resource '*', headers: :any, methods: [:get, :options]
       end

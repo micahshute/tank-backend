@@ -21,7 +21,7 @@ class Api::UsersController < ApplicationController
             user = User.new(user_params)
             if(user.save)
                 session[:user_id] = user.id
-                render json: JSON.generate({signup: :success})
+                render json: JSON.generate({signup: :success })
             else
                 render json: JSON.generate({signup: :failure, errors: user.errors.full_messages})
             end
