@@ -15,7 +15,7 @@ json.turn do
     json.user_id game.turn.user.id
 end
 json.healths(game.healths) do |health|
-    json.user_id health.user.id
+    json.username health.user.username
     json.value health.value
 end
 if !game.active
@@ -23,3 +23,7 @@ if !game.active
         json.user_id game.win.user.id
     end
 end
+json.singleScreen game.single_screen
+json.numberOfTurns game.number_of_turns
+json.healthPlayerOne game.health_player_1
+json.healthPlayerTwo game.health_player_2

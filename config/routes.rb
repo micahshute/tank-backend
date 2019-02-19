@@ -14,8 +14,11 @@ Rails.application.routes.draw do
       resources :games, only: [:index, :create, :update]
     end
 
-    get "/users/:user_id/games/:type/:id" => 'games#show'
     get "/users/:user_id/games/:type" => 'games#index'
+    post "/users/:user_id/games/:type" => 'games#create'
+    get "/users/:user_id/games/:type/:id" => 'games#show'
+    patch "/users/:user_id/games/:type/:id" => 'games#update'
+ 
 
     post "/username-check" => 'users#username_check'
 

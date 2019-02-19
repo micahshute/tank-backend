@@ -38,6 +38,18 @@ module TankBackend
           methods: [:get],
           headers: :any,
           credentials: true
+        resource '/api/users/current-user/games/tank_games',
+          methods: [:get, :post],
+          headers: :any,
+          credentials: true
+        resource '/api/users/current-user/games/tank_games/*',
+          methods: [:get, :post],
+          headers: :any,
+          credentials: true
+        resource '/api/logout',
+          methods: [:delete],
+          headers: :any,
+          credentials: true
         resource '*', headers: :any, methods: [:get, :options]
       end
     end

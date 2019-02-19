@@ -28,6 +28,10 @@ ActiveRecord::Schema.define(version: 2019_02_09_214250) do
 
   create_table "tank_games", force: :cascade do |t|
     t.boolean "active", default: true
+    t.integer "number_of_turns", default: 0
+    t.boolean "single_screen", default: false
+    t.integer "health_player_1", default: 3
+    t.integer "health_player_2", default: 3
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
