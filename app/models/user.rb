@@ -11,12 +11,20 @@ class User < ApplicationRecord
 
     #MARK INSTANCE METHODS
 
+    def uniq_tank_games
+        self.tank_games.uniq
+    end
+
     def games
         return tank_games
     end
 
+    def uniq_games
+        return uniq_tank_games
+    end
+
     def active_games 
-        games.where(active: true)
+        games.where(active: true).uniq
     end
 
     def number_of_games

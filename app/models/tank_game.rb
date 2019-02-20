@@ -1,5 +1,5 @@
 class TankGame < ApplicationRecord
-    has_many :user_games, as: :game, inverse_of: :game
+    has_many :user_games, as: :game, inverse_of: :game, dependent: :destroy
     has_many :users, through: :user_games
     has_many :healths, as: :game, dependent: :destroy, inverse_of: :game
     has_one :turn, as: :game, dependent: :destroy, inverse_of: :game
@@ -22,14 +22,15 @@ class TankGame < ApplicationRecord
         game.save
         game
     end 
- 
+
+    
 
     def self.new_game(*players)
         raise ArgumentError.new("There must be 2 players in TankGame") if players.length != 2
         game = self.new()
         players.each do |p| 
             game.users << p 
-            game.healths << Health.create(user: p, value: 100)
+            game.healths << Health.create(user: p, value: 3)
         end
         game.turn = Turn.create(user: players[0])
         begin
@@ -45,6 +46,11 @@ class TankGame < ApplicationRecord
     end
 
     #MARK INSTANCE METHODS
+
+    def players
+        return self.users.includes(:user_games).sort { |user1, user2| user1.user_games.where(game: self).first.created_at <=> user2.user_games.where(game: self).first.created_at }
+    end
+ 
 
     def type
         self.class.to_s
@@ -83,14 +89,15 @@ class TankGame < ApplicationRecord
 
     def register_hit(user, damage)
         if self.single_screen
-            if user.downcase == "blue"
+            if user == 1
                 self.health_player_1 = self.health_player_1 - damage
             else
                 self.health_player_2  = self.health_player_2 - damage
             end
-            @ending_user = singlescreen_user(singlescreen_turn)
+            ending_user = singlescreen_user(singlescreen_turn)
             if self.health_player_1 <= 0 || self.health_player_2 <= 0
                 self.active = false 
+                Win.create(game: self, user: ending_user)
                 return
             end
         else
@@ -98,21 +105,29 @@ class TankGame < ApplicationRecord
             health = healths.where(user: user)
             health.update(value: health.value - damage)
             if(health.value <= 0)
-                active = false
+                self.active = false
                 Win.create(game: self, user: self.opponent(user))
             end
-            @ending_user = self.opponent(user)
+            ending_user = self.opponent(user)
         end
-        self.end_turn(@ending_user)
+        self.end_turn
     end
 
-    def end_turn(user)
+    def end_turn_for(user)
         raise ArgumentError.new("User #{user.username} is not in this game") if not has_user?(user)
         raise ArgumentError.new("It is not #{user.username}'s turn'") if turn.user.username != user.username
         self.turn.user = self.opponent(user) 
         self.number_of_turns = self.number_of_turns + 1
         self.save
         return true
+    end
+
+    def end_turn
+        if(self.single_screen)
+            end_turn_for(singlescreen_user(singlescreen_turn)) 
+        else
+            end_turn_for self.turn.user
+        end
     end
 
     #MARK SERIALIZER METHODS 

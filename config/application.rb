@@ -43,7 +43,7 @@ module TankBackend
           headers: :any,
           credentials: true
         resource '/api/users/current-user/games/tank_games/*',
-          methods: [:get, :post],
+          methods: [:get, :post, :patch],
           headers: :any,
           credentials: true
         resource '/api/logout',

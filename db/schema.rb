@@ -50,6 +50,8 @@ ActiveRecord::Schema.define(version: 2019_02_09_214250) do
     t.bigint "user_id"
     t.string "game_type"
     t.bigint "game_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["game_type", "game_id"], name: "index_user_games_on_game_type_and_game_id"
     t.index ["user_id"], name: "index_user_games_on_user_id"
   end

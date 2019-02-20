@@ -17,7 +17,7 @@ class Api::GamesController < ApplicationController
             
             if type = params[:type]
                 if valid_game?(params[:type])
-                    @games = @user.send(type)
+                    @games = @user.send("uniq_#{type}")
                 else
                     error = OpenStruct.new
                     error.msg = "#{type} is an invalid game type"
@@ -50,7 +50,7 @@ class Api::GamesController < ApplicationController
     def create
         if(logged_in?)
             @user = current_user
-            if(params[:game_type] == 'single_screen')
+            if(params[:gameType] == 'single_screen')
                 @game = TankGame.new_singlescreen_game(current_user)
             else
                 opponent = User.find(params[:opponent_id])
@@ -67,24 +67,27 @@ class Api::GamesController < ApplicationController
         if logged_in?
             @user = current_user
             @game = TankGame.find(params[:id])
-            if @game.single_screen
-                @game.update(singlescreen_game_params)
-                @game.update(active: false) if @game.health_player_1 <= 0 || @game.health_player_2
-            else    
-                case params[:game_update_type]
-                when :damage_done
-                    victim = User.find(params[:user_id])
-                    @game.register_hit(victim)
-                when :turn_over
-                    @game.end_turn(current_user)
-                else 
-
-                end
+            
+            case params[:updateType]
+                when "endTurn"
+                    @game.end_turn
+                    render 'show'
+                when "registerHit"
+                    if @game.single_screen
+                        victim = params[:username]
+                    else
+                        victim = User.find_by(username: params[:username])
+                    end
+                    damage = params[:damage].to_i
+                    @game.register_hit(victim, damage)
+                    render 'show'
+                else
+                    render json: JSON.generate({ errors: "Unsupported update type" })
             end
-            render 'show'
+
         else
             render json: JSON.generate({ errors: "You must be logged in to perform this action" })
-        end 
+        end
     end
 
 
