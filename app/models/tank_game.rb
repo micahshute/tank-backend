@@ -66,10 +66,10 @@ class TankGame < ApplicationRecord
 
     def active=(active_status)
         write_attribute(:active, active_status)
-        if !active_status
-            self.healths.destroy_all
-            self.turn.destroy
-        end
+        # if !active_status
+        #     self.healths.destroy_all
+        #     self.turn.destroy
+        # end
         self.save
     end
 
@@ -102,7 +102,7 @@ class TankGame < ApplicationRecord
             end
         else
             raise ArgumentError.new("User #{user.username} is not in this game") if not has_user?(user)
-            health = healths.where(user: user)
+            health = healths.where(user: user).first
             health.update(value: health.value - damage)
             if(health.value <= 0)
                 self.active = false
@@ -116,7 +116,7 @@ class TankGame < ApplicationRecord
     def end_turn_for(user)
         raise ArgumentError.new("User #{user.username} is not in this game") if not has_user?(user)
         raise ArgumentError.new("It is not #{user.username}'s turn'") if turn.user.username != user.username
-        self.turn.user = self.opponent(user) 
+        self.turn.update(user: self.opponent(user)) 
         self.number_of_turns = self.number_of_turns + 1
         self.save
         return true

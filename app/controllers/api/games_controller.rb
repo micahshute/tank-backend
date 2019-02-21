@@ -67,17 +67,19 @@ class Api::GamesController < ApplicationController
         if logged_in?
             @user = current_user
             @game = TankGame.find(params[:id])
-            
+            # binding.pry
             case params[:updateType]
                 when "endTurn"
                     @game.end_turn
                     render 'show'
                 when "registerHit"
+                    victim = nil
                     if @game.single_screen
                         victim = params[:username]
                     else
                         victim = User.find_by(username: params[:username])
                     end
+                    raise TypeError.new("User not found") if !victim
                     damage = params[:damage].to_i
                     @game.register_hit(victim, damage)
                     render 'show'

@@ -17,17 +17,17 @@ if !game.single_screen
     if !game.active
         json.winner do
             json.user_id game.win.user.id
+            json.username game.win.user.username
         end
-    else    
-        json.turn do
-            json.username game.turn.user.username 
-            json.user_id game.turn.user.id
-            json.player ( game.players.index{ |p| p.username == game.turn.user.username } + 1 )
-        end
-        json.healths(game.healths) do |health|
-            json.username health.user.username
-            json.value health.value
-        end
+    end   
+    json.turn do
+        json.username game.turn.user.username 
+        json.user_id game.turn.user.id
+        json.player ( game.players.index{ |p| p.username == game.turn.user.username } + 1 )
+    end
+    json.healths(game.healths) do |health|
+        json.username health.user.username
+        json.value health.value
     end
 end
 json.singleScreen game.single_screen
