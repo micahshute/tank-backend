@@ -36,8 +36,13 @@ class Api::GamesController < ApplicationController
     def show
         type = params[:type]
         if valid_game?(type)
-            @user = User.find(params[:user_id]) if params[:user_id]
+            if logged_in? and params[:user_id] == "current-user"
+                @user = current_user
+            else
+                @user = User.find(params[:user_id]) if params[:user_id]
+            end
             @game = type.slice(0, type.length - 1).camelcase.constantize.find(params[:id])
+        
         else
             error = OpenStruct.new
             error.msg = "#{type} is an invalid game type"
