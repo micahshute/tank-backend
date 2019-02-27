@@ -58,8 +58,12 @@ class Api::GamesController < ApplicationController
             if(params[:gameType] == 'single_screen')
                 @game = TankGame.new_singlescreen_game(current_user)
             else
-                opponent = User.find(params[:opponent_id])
-                @game = Tankgame.new_game(opponent, @user)
+                opponent = User.find_by(username: params[:username])
+                if opponent
+                    @game = TankGame.new_game(opponent, @user)
+                else
+                    render json: JSON.generate({ errors: "Could not find user" }) 
+                end
 
             end
             render 'show'
