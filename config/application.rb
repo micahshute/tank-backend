@@ -13,7 +13,8 @@ module TankBackend
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'http://localhost:3000'
+        # origins 'http://localhost:3000'
+        origins 'https://shute-games.herokuapp.com'
         resource '/api/signup',
           methods: [:post],
           headers: :any,
